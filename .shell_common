@@ -24,6 +24,9 @@ dev_env_setup_common_colors() {
   fi
 
   alias grep='grep --color=auto'
+  alias ..='cd ..'
+  alias ...='cd ../..'
+  alias dev='cd ~/dev'
 }
 
 dev_env_setup_fzf_defaults() {

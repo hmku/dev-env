@@ -29,6 +29,7 @@ install_packages() {
     brew list tmux >/dev/null 2>&1 || brew install tmux
     if [[ "$(uname -s)" == "Darwin" ]]; then
       brew list --cask ghostty >/dev/null 2>&1 || brew install --cask ghostty
+      brew list --cask hammerspoon >/dev/null 2>&1 || brew install --cask hammerspoon
     fi
   elif command -v apt-get >/dev/null 2>&1; then
     sudo apt-get update
@@ -72,7 +73,13 @@ link_file "$repo_dir/.bashrc" "$HOME/.bashrc"
 link_file "$repo_dir/.zshrc" "$HOME/.zshrc"
 link_file "$repo_dir/.inputrc" "$HOME/.inputrc"
 link_file "$repo_dir/.tmux.conf" "$HOME/.tmux.conf"
+mkdir -p "$HOME/.hammerspoon"
+link_file "$repo_dir/hammerspoon/init.lua" "$HOME/.hammerspoon/init.lua"
 ensure_bash_profile_sources_bashrc
 print_terminal_note
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  printf 'note: open Hammerspoon once and grant Accessibility permission for window shortcuts.\n'
+fi
 
 printf '\nDone. Open a new shell, or run: source ~/.zshrc\n'
