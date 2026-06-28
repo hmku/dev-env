@@ -8,34 +8,6 @@ source "${DEV_ENV_DIR:-$HOME}/.shell_common"
 bindkey -v
 export KEYTIMEOUT=1
 
-dev_env_set_cursor_shape() {
-  case "${KEYMAP:-}" in
-    vicmd)
-      printf '\e[1 q'
-      ;;
-    viins|main|"")
-      printf '\e[5 q'
-      ;;
-  esac
-}
-
-zle-keymap-select() {
-  dev_env_set_cursor_shape
-  zle reset-prompt
-}
-
-zle-line-init() {
-  printf '\e[5 q'
-}
-
-zle-line-finish() {
-  printf '\e[0 q'
-}
-
-zle -N zle-keymap-select
-zle -N zle-line-init
-zle -N zle-line-finish
-
 # History behavior.
 HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
 HISTSIZE=50000
