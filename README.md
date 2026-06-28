@@ -6,6 +6,7 @@ Portable shell and tmux setup.
 
 - Zsh prompt with timestamp, full working path, git branch, and color.
 - Bash fallback prompt with the same style for Linux or explicit Bash sessions.
+- Shared shell settings in `.shell_common` to keep Bash and Zsh aligned.
 - Vim mode enabled by default for Zsh and Bash/readline.
 - fzf key bindings and reverse-layout history search.
 - Ghostty installed on macOS via Homebrew cask.
@@ -33,6 +34,7 @@ terminal app for this setup after installation.
 
 - `.bashrc`
 - `.zshrc`
+- `.shell_common`
 - `.inputrc`
 - `.tmux.conf`
 - `install.sh`

@@ -67,6 +67,7 @@ ensure_bash_profile_sources_bashrc() {
 }
 
 install_packages
+link_file "$repo_dir/.shell_common" "$HOME/.shell_common"
 link_file "$repo_dir/.bashrc" "$HOME/.bashrc"
 link_file "$repo_dir/.zshrc" "$HOME/.zshrc"
 link_file "$repo_dir/.inputrc" "$HOME/.inputrc"
