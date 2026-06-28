@@ -27,6 +27,9 @@ install_packages() {
   if command -v brew >/dev/null 2>&1; then
     brew list fzf >/dev/null 2>&1 || brew install fzf
     brew list tmux >/dev/null 2>&1 || brew install tmux
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+      brew list --cask ghostty >/dev/null 2>&1 || brew install --cask ghostty
+    fi
   elif command -v apt-get >/dev/null 2>&1; then
     sudo apt-get update
     sudo apt-get install -y fzf tmux vim git
@@ -36,6 +39,15 @@ install_packages() {
     sudo pacman -Sy --needed fzf tmux vim git
   else
     printf 'warn: no supported package manager found; install fzf, tmux, vim, and git manually\n' >&2
+  fi
+}
+
+print_terminal_note() {
+  [[ "$(uname -s)" == "Darwin" ]] || return 0
+
+  if [[ -d /Applications/Ghostty.app || -d "$HOME/Applications/Ghostty.app" ]]; then
+    printf 'ok: Ghostty is installed. Use Ghostty for this environment instead of Terminal.app.\n'
+    printf 'note: macOS does not provide a universal default-terminal setting to switch programmatically.\n'
   fi
 }
 
@@ -60,5 +72,6 @@ link_file "$repo_dir/.zshrc" "$HOME/.zshrc"
 link_file "$repo_dir/.inputrc" "$HOME/.inputrc"
 link_file "$repo_dir/.tmux.conf" "$HOME/.tmux.conf"
 ensure_bash_profile_sources_bashrc
+print_terminal_note
 
 printf '\nDone. Open a new shell, or run: source ~/.zshrc\n'

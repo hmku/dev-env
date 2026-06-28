@@ -8,6 +8,7 @@ Portable shell and tmux setup.
 - Bash fallback prompt with the same style for Linux or explicit Bash sessions.
 - Vim mode enabled by default for Zsh and Bash/readline.
 - fzf key bindings and reverse-layout history search.
+- Ghostty installed on macOS via Homebrew cask.
 - tmux config using `` ` `` as the prefix.
 - tmux pane navigation with prefix + `h`, `j`, `k`, `l`.
 - tmux window navigation with prefix + `H` and `L`.
@@ -23,6 +24,10 @@ cd ~/dev-env
 
 The installer backs up existing dotfiles into `~/.dotfiles-backup/<timestamp>/`
 before replacing them with symlinks.
+
+On macOS, the installer installs Ghostty when Homebrew is available. macOS does
+not expose a reliable universal default-terminal setting, so use Ghostty as the
+terminal app for this setup after installation.
 
 ## Files
 
