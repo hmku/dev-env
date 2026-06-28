@@ -1,0 +1,13 @@
+set editing-mode vi
+set keymap vi-command
+
+# Make vi mode feel immediate.
+set keyseq-timeout 10
+set show-mode-in-prompt on
+set vi-ins-mode-string "\1\e[32m\2[ins]\1\e[0m\2 "
+set vi-cmd-mode-string "\1\e[33m\2[cmd]\1\e[0m\2 "
+
+# fzf reverse history search on Ctrl-r when fzf is installed.
+$if Bash
+"\C-r": " \C-e\C-u\C-y\ey\C-u`__fzf_history__`\e\C-e\er\e^"
+$endif
