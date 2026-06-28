@@ -1,11 +1,13 @@
 hs.window.animationDuration = 0
+hs.autoLaunch(true)
+hs.ipc.cliInstall()
 
 local hyper = { "alt" }
 
 local function focusedWindow()
-  local window = hs.window.focusedWindow()
+  local window = hs.window.focusedWindow() or hs.window.frontmostWindow()
   if not window then
-    hs.alert.show("No focused window")
+    hs.alert.show("Grant Hammerspoon Accessibility permission")
   end
   return window
 end
@@ -21,7 +23,10 @@ end
 
 local function focusApp(name)
   return function()
-    hs.application.launchOrFocus(name)
+    local ok = hs.application.launchOrFocus(name)
+    if not ok then
+      hs.alert.show("Could not open " .. name)
+    end
   end
 end
 

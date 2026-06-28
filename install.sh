@@ -52,6 +52,17 @@ print_terminal_note() {
   fi
 }
 
+setup_hammerspoon_permissions() {
+  [[ "$(uname -s)" == "Darwin" ]] || return 0
+
+  if [[ -d /Applications/Hammerspoon.app || -d "$HOME/Applications/Hammerspoon.app" ]]; then
+    open -a Hammerspoon >/dev/null 2>&1 || true
+    open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility" >/dev/null 2>&1 || true
+    printf 'note: enable Hammerspoon in System Settings > Privacy & Security > Accessibility.\n'
+    printf 'note: Hammerspoon window resizing will not work until Accessibility permission is granted.\n'
+  fi
+}
+
 ensure_bash_profile_sources_bashrc() {
   local profile="$HOME/.bash_profile"
   local marker="# Source shared dev-env Bash config"
@@ -77,9 +88,6 @@ mkdir -p "$HOME/.hammerspoon"
 link_file "$repo_dir/hammerspoon/init.lua" "$HOME/.hammerspoon/init.lua"
 ensure_bash_profile_sources_bashrc
 print_terminal_note
-
-if [[ "$(uname -s)" == "Darwin" ]]; then
-  printf 'note: open Hammerspoon once and grant Accessibility permission for window shortcuts.\n'
-fi
+setup_hammerspoon_permissions
 
 printf '\nDone. Open a new shell, or run: source ~/.zshrc\n'
