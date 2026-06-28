@@ -23,6 +23,10 @@ setopt prompt_subst
 
 PROMPT='%F{244}[%*]%f %F{33}%/%f%F{37}$(dev_env_git_branch)%f %F{40}%#%f '
 
+if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" && -r "$GHOSTTY_RESOURCES_DIR/shell-integration/zsh/ghostty-integration" ]]; then
+  source "$GHOSTTY_RESOURCES_DIR/shell-integration/zsh/ghostty-integration"
+fi
+
 # fzf integration, if installed. Key bindings need a real terminal.
 if [[ -t 0 && -t 1 ]]; then
   if [[ -f "$HOME/.fzf/shell/key-bindings.zsh" ]]; then
