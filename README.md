@@ -12,7 +12,6 @@ Portable shell and tmux setup.
 - tmux pane navigation with prefix + `h`, `j`, `k`, `l`.
 - tmux window navigation with prefix + `H` and `L`.
 - tmux mouse mode disabled so normal terminal mouse selection works.
-- macOS dark appearance and dark Terminal.app profile setup.
 
 ## Install
 
