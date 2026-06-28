@@ -1,5 +1,9 @@
 # Shared interactive Bash configuration.
 
+if [[ -z "${BASH_VERSION:-}" ]]; then
+  return 0 2>/dev/null || exit 0
+fi
+
 case $- in
   *i*) ;;
   *) return ;;

@@ -53,6 +53,11 @@ tell application "Terminal"
     if exists settings set (profileName as text) then
       set default settings to settings set (profileName as text)
       set startup settings to settings set (profileName as text)
+      if (count of windows) > 0 then
+        repeat with terminalWindow in windows
+          set current settings of terminalWindow to settings set (profileName as text)
+        end repeat
+      end if
       exit repeat
     end if
   end repeat
@@ -64,6 +69,28 @@ APPLESCRIPT
   fi
 
   printf 'update: set Terminal.app to a dark profile when available\n'
+}
+
+set_system_dark_mode() {
+  [[ "$(uname -s)" == "Darwin" ]] || return 0
+
+  if ! command -v osascript >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if ! osascript <<'APPLESCRIPT' >/dev/null 2>&1
+tell application "System Events"
+  tell appearance preferences
+    set dark mode to true
+  end tell
+end tell
+APPLESCRIPT
+  then
+    printf 'warn: could not enable macOS dark appearance automatically\n' >&2
+    return 0
+  fi
+
+  printf 'update: enabled macOS dark appearance\n'
 }
 
 ensure_bash_profile_sources_bashrc() {
@@ -83,9 +110,11 @@ ensure_bash_profile_sources_bashrc() {
 
 install_packages
 link_file "$repo_dir/.bashrc" "$HOME/.bashrc"
+link_file "$repo_dir/.zshrc" "$HOME/.zshrc"
 link_file "$repo_dir/.inputrc" "$HOME/.inputrc"
 link_file "$repo_dir/.tmux.conf" "$HOME/.tmux.conf"
 ensure_bash_profile_sources_bashrc
 set_dark_terminal_profile
+set_system_dark_mode
 
-printf '\nDone. Open a new shell, or run: source ~/.bashrc\n'
+printf '\nDone. Open a new shell, or run: source ~/.zshrc\n'
