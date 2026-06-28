@@ -21,7 +21,7 @@ setopt hist_reduce_blanks
 # Prompt: timestamp + full path, with git branch when available.
 setopt prompt_subst
 
-PROMPT='%F{244}[%*]%f %F{33}%~%f%F{37}$(dev_env_git_branch)%f %F{40}%#%f '
+PROMPT='%F{244}[%*]%f %F{33}%/%f%F{37}$(dev_env_git_branch)%f %F{40}%#%f '
 
 # fzf integration, if installed. Key bindings need a real terminal.
 if [[ -t 0 && -t 1 ]]; then

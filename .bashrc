@@ -35,7 +35,7 @@ __prompt_command() {
     status_color="$red"
   fi
 
-  PS1="${dim}[\A]${reset} ${blue}\w${cyan}$(dev_env_git_branch)${reset} ${status_color}\\$${reset} "
+  PS1="${dim}[\A]${reset} ${blue}${PWD}${cyan}$(dev_env_git_branch)${reset} ${status_color}\\$${reset} "
 }
 
 PROMPT_COMMAND=__prompt_command
