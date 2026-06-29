@@ -40,10 +40,12 @@ is granted.
 
 ## Hammerspoon Shortcuts
 
-- `Option` + `Left`: left half
-- `Option` + `Right`: right half
+- `Option` + `Left`: left half; press again from the left half to move to the monitor on the left
+- `Option` + `Right`: right half; press again from the right half to move to the monitor on the right
 - `Option` + `Up`: top half
 - `Option` + `Down`: bottom half
+- `Option` + `F`: maximize; press again to restore the previous size
+- `Option` + `1`: reload Hammerspoon config
 - `Option` + `S`: open or focus Ghostty
 - `Option` + `Space`: open or focus Google Chrome
 
