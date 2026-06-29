@@ -4,6 +4,57 @@ set -euo pipefail
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
+find_brew() {
+  if command -v brew >/dev/null 2>&1; then
+    command -v brew
+    return 0
+  fi
+
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    printf '%s\n' /opt/homebrew/bin/brew
+    return 0
+  fi
+
+  if [[ -x /usr/local/bin/brew ]]; then
+    printf '%s\n' /usr/local/bin/brew
+    return 0
+  fi
+
+  return 1
+}
+
+print_homebrew_note() {
+  printf 'error: Homebrew installation finished, but brew was not found.\n' >&2
+  printf '       Expected brew at /opt/homebrew/bin/brew or /usr/local/bin/brew.\n' >&2
+}
+
+install_homebrew() {
+  local installer
+  local installer_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+
+  if ! command -v curl >/dev/null 2>&1; then
+    printf 'error: curl is required to install Homebrew.\n' >&2
+    return 1
+  fi
+
+  installer="$(mktemp)"
+  printf 'install: Homebrew not found; downloading official installer from %s\n' "$installer_url"
+  if ! curl -fsSL "$installer_url" -o "$installer"; then
+    rm -f "$installer"
+    printf 'error: failed to download the Homebrew installer.\n' >&2
+    return 1
+  fi
+
+  printf 'install: running Homebrew installer. It may ask for your macOS password.\n'
+  if ! /bin/bash "$installer"; then
+    rm -f "$installer"
+    printf 'error: Homebrew installer failed.\n' >&2
+    return 1
+  fi
+
+  rm -f "$installer"
+}
+
 link_file() {
   local source="$1"
   local target="$2"
@@ -23,13 +74,29 @@ link_file() {
   printf 'link: %s -> %s\n' "$target" "$source"
 }
 
+install_brew_packages() {
+  local brew_bin="$1"
+
+  "$brew_bin" list fzf >/dev/null 2>&1 || "$brew_bin" install fzf
+  "$brew_bin" list tmux >/dev/null 2>&1 || "$brew_bin" install tmux
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    "$brew_bin" list --cask ghostty >/dev/null 2>&1 || "$brew_bin" install --cask ghostty
+    "$brew_bin" list --cask hammerspoon >/dev/null 2>&1 || "$brew_bin" install --cask hammerspoon
+  fi
+}
+
 install_packages() {
-  if command -v brew >/dev/null 2>&1; then
-    brew list fzf >/dev/null 2>&1 || brew install fzf
-    brew list tmux >/dev/null 2>&1 || brew install tmux
-    if [[ "$(uname -s)" == "Darwin" ]]; then
-      brew list --cask ghostty >/dev/null 2>&1 || brew install --cask ghostty
-      brew list --cask hammerspoon >/dev/null 2>&1 || brew install --cask hammerspoon
+  local brew_bin
+
+  if brew_bin="$(find_brew)"; then
+    install_brew_packages "$brew_bin"
+  elif [[ "$(uname -s)" == "Darwin" ]]; then
+    install_homebrew
+    if brew_bin="$(find_brew)"; then
+      install_brew_packages "$brew_bin"
+    else
+      print_homebrew_note
+      return 1
     fi
   elif command -v apt-get >/dev/null 2>&1; then
     sudo apt-get update
@@ -52,11 +119,45 @@ print_terminal_note() {
   fi
 }
 
+open_hammerspoon() {
+  local app_path
+
+  if [[ -d /Applications/Hammerspoon.app ]]; then
+    app_path="/Applications/Hammerspoon.app"
+  elif [[ -d "$HOME/Applications/Hammerspoon.app" ]]; then
+    app_path="$HOME/Applications/Hammerspoon.app"
+  else
+    return 1
+  fi
+
+  printf 'open: launching Hammerspoon before opening Accessibility settings\n'
+  open "$app_path" >/dev/null 2>&1 || return 1
+}
+
+wait_for_hammerspoon() {
+  local attempt
+
+  if ! command -v pgrep >/dev/null 2>&1; then
+    sleep 2
+    return 0
+  fi
+
+  for attempt in 1 2 3 4 5 6 7 8 9 10; do
+    if pgrep -x Hammerspoon >/dev/null 2>&1; then
+      return 0
+    fi
+    sleep 1
+  done
+
+  return 0
+}
+
 setup_hammerspoon_permissions() {
   [[ "$(uname -s)" == "Darwin" ]] || return 0
 
   if [[ -d /Applications/Hammerspoon.app || -d "$HOME/Applications/Hammerspoon.app" ]]; then
-    open -a Hammerspoon >/dev/null 2>&1 || true
+    open_hammerspoon || true
+    wait_for_hammerspoon
     open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility" >/dev/null 2>&1 || true
     printf 'note: enable Hammerspoon in System Settings > Privacy & Security > Accessibility.\n'
     printf 'note: Hammerspoon window resizing will not work until Accessibility permission is granted.\n'
