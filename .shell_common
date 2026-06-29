@@ -11,6 +11,23 @@ dev_env_git_branch() {
   [[ -n "$branch" ]] && printf ' (%s)' "$branch"
 }
 
+dev_env_setup_homebrew() {
+  [[ "$(uname -s)" == "Darwin" ]] || return 0
+
+  local brew_bin
+  if command -v brew >/dev/null 2>&1; then
+    brew_bin="$(command -v brew)"
+  elif [[ -x /opt/homebrew/bin/brew ]]; then
+    brew_bin="/opt/homebrew/bin/brew"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    brew_bin="/usr/local/bin/brew"
+  else
+    return 0
+  fi
+
+  eval "$("$brew_bin" shellenv)"
+}
+
 dev_env_setup_common_colors() {
   if [[ "$(uname -s)" == "Darwin" ]]; then
     export CLICOLOR=1
@@ -35,5 +52,6 @@ dev_env_setup_fzf_defaults() {
   fi
 }
 
+dev_env_setup_homebrew
 dev_env_setup_common_colors
 dev_env_setup_fzf_defaults

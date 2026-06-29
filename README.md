@@ -28,15 +28,15 @@ cd ~/dev-env
 The installer backs up existing dotfiles into `~/.dotfiles-backup/<timestamp>/`
 before replacing them with symlinks.
 
-On macOS, the installer installs Ghostty when Homebrew is available. macOS does
-not expose a reliable universal default-terminal setting, so use Ghostty as the
-terminal app for this setup after installation.
+On macOS, the installer bootstraps Homebrew when needed, then installs Ghostty.
+macOS does not expose a reliable universal default-terminal setting, so use
+Ghostty as the terminal app for this setup after installation.
 
 The installer also installs Hammerspoon, links `~/.hammerspoon/init.lua`, opens
-Hammerspoon, and opens the macOS Accessibility settings pane. The Hammerspoon
-config enables launch at login. Enable Hammerspoon in System Settings > Privacy
-& Security > Accessibility. Window shortcuts will not work until that permission
-is granted.
+Hammerspoon, waits briefly for it to start, and then opens the macOS
+Accessibility settings pane. The Hammerspoon config enables launch at login.
+Enable Hammerspoon in System Settings > Privacy & Security > Accessibility.
+Window shortcuts will not work until that permission is granted.
 
 ## Hammerspoon Shortcuts
 
